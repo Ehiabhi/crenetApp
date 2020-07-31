@@ -1,0 +1,77 @@
+<%- include("_layouts/header"); -%>
+
+<% if (typeof cart !== "undefined") { %>
+
+<h1 class="page-title">My Cart</h1>
+<br><br>
+
+<table class="table table-striped alignmiddle">
+
+    <tr>
+        <th>Image</th>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th></th>
+        <th>Subtotal</th>
+    </tr>
+
+    <% var total = 0; %>
+    <% cart.forEach(function(product){ %>
+    <% var sub = parseFloat(product.qty * product.price).toFixed(2) %>
+    <% total += +sub %>
+    <tr>
+        <td><img class="cpi" src="<%= product.image %>" alt=""></td>
+        <td><%= product.title %></td>
+        <td>$<%= product.price %></td>
+        <td><%= product.qty %></td>
+        <td>
+            <a href="/cart/update/<%= product.title %>?action=add">+</a>&nbsp;
+            <a href="/cart/update/<%= product.title %>?action=remove">-</a>&nbsp;
+            <a href="/cart/update/<%= product.title %>?action=clear">Clear</a>&nbsp;
+        </td>
+        <td>$<%= sub %></td>
+    </tr>
+    <% }); %>
+    <tr>
+        <td colspan="6" align="right" id="amount"><b>Total: </b> $<%= parseFloat(total).toFixed(2) %></td>
+    </tr>
+    <tr>
+        <td colspan="5" align="right">
+            <a class="clearcart btn btn-danger clearcart" href="/cart/clear">Clear cart</a>
+        </td>
+        <td colspan="5" align="right">
+            <a class="btn btn-primary buynow" id="paymentForm" href="#">Buy now</a>
+        </td>
+    </tr>
+
+</table>
+
+
+
+<% } else {%>
+<h3 class="text-center">Your cart is empty.</h3>
+<% } %>
+
+<script>
+
+    $(function () {
+        $('a.clearcart').on('click', function () {
+            if (!confirm('Are you sure you want to clear your cart?'))
+                return false;
+        });
+
+        $('a.buynow').on('click', function (e) {
+            e.preventDefault();
+
+            $.get('/cart/buynow', function () {
+                $('form.pp input[type=image]').click();
+                $('.ajaxbg').show();
+            });
+        });
+
+    });
+
+</script>
+
+<%- include("_layouts/footer"); -%>
