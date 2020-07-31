@@ -116,3 +116,5 @@ dist
 
 
 heroku sign_in url.txt
+
+dump.txt
